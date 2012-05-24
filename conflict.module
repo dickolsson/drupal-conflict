@@ -6,8 +6,20 @@
  * @author Brandon Bergren
  */
 
+/**
+ * @todo
+ *   - Figure out what to do about dependencies between fields?
+ *   - Come up with a cleaner way to compare fields than the current hashing.
+ *   - Figure out a way to inform the user as to what the other side of the conflict is?
+ *   - Handle things that aren't fields?
+ *   - Handle non-nodes?
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_form.
+ */
 function conflict_form_node_form_alter(&$form, &$form_state) {
-  // Force caching enabled so we can keep our base object around.
+  // Force caching enabled so the original $form['node'] survives multiple page requests.
   $form_state['cache'] = TRUE;
 }
 
@@ -34,11 +46,14 @@ function conflict_node_validate($node, &$form, &$form_state) {
     }
 
     $nodes = array();
+    // Base node: The common ancestor that was cached when beginning the node edit.
     $nodes['base'] = clone($form_state['node']);
+    // Theirs: The current state of the node, with the changes that happened in parallel.
     $nodes['theirs'] = node_load($node->nid, NULL, TRUE);
+    // Mine: The node that was about to be saved.
     $nodes['mine'] = clone($node);
 
-    // Dig through the fields
+    // Dig through the fields looking for conflicts.
     $conflicting = FALSE; // Assume we can fix things unless proven otherwise.
     $updated = FALSE;
     $type = node_type_get_type($nodes['mine']);
