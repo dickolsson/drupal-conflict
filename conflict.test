@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Tests for conflict.module.
+ */
+
+class ConflictTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Excersise node conflicts',
+      'description' => 'Force conflicts while editing nodes.',
+      'group' => 'Conflict',
+    );
+  }
+
+  function setUp() {
+    $modules = array('conflict');
+    parent::setUp($modules);
+    $web_user = $this->drupalCreateUser(array('create article content', 'edit own article content'));
+    $this->drupalLogin($web_user);
+  }
+
+  /**
+   * Create a node and edit it in parallel.
+   */
+  function testConflictIntegrateChanges() {
+    $langcode = LANGUAGE_NONE;
+    $title_key = "title";
+    $body_key = "body[$langcode][0][value]";
+
+    $orig_title = $this->randomName(8);
+    $conflict_title = $this->randomName(8);
+
+    // Create the node to work with.
+    $node = $this->drupalCreateNode(array('type' => 'article', 'title' => $orig_title));
+    // Load the edit page up.
+    $this->drupalGet("node/$node->nid/edit");
+
+    // Before submitting the form, make changes to the node from somewhere else.
+    $conflict = clone($node);
+//    $conflict->title = $this->randomName(8);
+    $conflict->body[$langcode][0]['value'] = $this->randomName(16);
+    node_save($conflict);
+    // Fudge the timestamps in the database.
+    db_query('UPDATE {node} SET changed = changed + 100 WHERE nid = :nid', array(':nid' => $conflict->nid));
+    db_query('UPDATE {node_revision} SET timestamp = timestamp + 100 WHERE nid = :nid', array(':nid' => $conflict->nid));
+    // Force reload the node.
+    $foo = node_load($conflict->nid, NULL, TRUE);
+    debug($foo, 'Testnode');
+
+    // Attempt to make changes.
+    $edit = array();
+    $edit['title'] = $this->randomName(8);
+//    $edit[$body_key] = $this->randomName(16);
+    $this->drupalPost(NULL, $edit, t('Save'));
+
+    //$this->assertText()
+    //debug($this->drupalGetContent(), 'Page data');
+  }
+}

@@ -13,6 +13,8 @@
  *   - Figure out a way to inform the user as to what the other side of the conflict is?
  *   - Handle things that aren't fields?
  *   - Handle non-nodes?
+ *   - Limit to specific node types?
+ *   - Handle title!
  */
 
 /**
