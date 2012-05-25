@@ -19,17 +19,14 @@ class ConflictWebTestCase extends DrupalWebTestCase {
   }
 
   protected function drupalSwitchUser(stdClass $account) {
-    if (isset($account->curlHandle)) {
+    if (isset($account->session)) {
       // Switch to the user session.
       $this->loggedInUser = $account;
-      $this->curlHandle = $account->curlHandle;
+      $this->curlHandle = $account->session->curlHandle;
 
       // Restore internal browser state of the user.
-      if (isset($acccount->content)) {
-        $this->url = $account->url;
-        $this->content = $account->content;
-        $this->drupalSettings = $account->drupalSettings;
-      }
+      // Updates content properties on $this as well as $this->loggedInUser.
+      $this->drupalSetContent($account->session->content, $account->session->url);
       return TRUE;
     }
     return FALSE;
@@ -53,19 +50,12 @@ class ConflictWebTestCase extends DrupalWebTestCase {
     }
     // If there is a session attached on $user already, try to use that directly.
     elseif ($this->drupalSwitchUser($user)) {
+      $this->verbose($this->drupalGetcontent());
       $this->pass(t('User %name is still logged in.', array('%name' => $user->name)), t('User login'));
       return;
-//      // Check whether the session is still valid.
-//      $output = $this->drupalGet('user');
-//      if (!strpos($output, 'user/login')) {
-//      }
-//      // The last known session is no longer valid; forget it and continue with
-//      // regular login below.
-//      unset($user->curlHandle);
     }
 
-    // In any case, if we are logged in already and are asked to re-login, log
-    // out first.
+    // If we are logged in already and are asked to re-login, log out first.
     if ($this->loggedInUser && $this->loggedInUser->uid == $user->uid) {
       $this->drupalLogout();
     }
@@ -82,7 +72,10 @@ class ConflictWebTestCase extends DrupalWebTestCase {
 
     if ($pass) {
       // Save the user's session on the account itself.
-      $user->curlHandle = $this->curlHandle;
+      if (!isset($user->session)) {
+        $user->session = new stdClass;
+      }
+      $user->session->curlHandle = $this->curlHandle;
 
       // Switch the currently logged in user.
       $this->loggedInUser = $user;
@@ -112,7 +105,10 @@ class ConflictWebTestCase extends DrupalWebTestCase {
 
     if ($pass) {
       // Remove the user's session on the account itself.
-      unset($account->curlHandle);
+      if (isset($account->session->curlHandle)) {
+        curl_close($account->session->curlHandle);
+      }
+      unset($account->session);
 
       // Switch to no session.
       $this->loggedInUser = FALSE;
@@ -127,10 +123,10 @@ class ConflictWebTestCase extends DrupalWebTestCase {
 
     // Clone the relevant results onto the currently logged in user
     // account/session.
-    if (!empty($this->loggedInUser->curlHandle)) {
-      $this->loggedInUser->url = $this->url;
-      $this->loggedInUser->content = $this->content;
-      $this->loggedInUser->drupalSettings = $this->drupalSettings; 
+    if (isset($this->loggedInUser->session)) {
+      $this->loggedInUser->session->url = $this->url;
+      $this->loggedInUser->session->content = $this->content;
+      $this->loggedInUser->session->drupalSettings = $this->drupalSettings;
     }
   }
 }
@@ -151,6 +147,7 @@ class ConflictSwitchExampleTestCase extends ConflictWebTestCase {
     $this->clickLink(t('Edit'));
 
     // Login second user.
+    // Without passing TRUE, the first user would be logged out.
     $this->drupalLogin($this->user2, TRUE);
     $this->assertText($this->user2->name);
     $this->clickLink(t('Edit'));
@@ -163,14 +160,28 @@ class ConflictSwitchExampleTestCase extends ConflictWebTestCase {
 
     // Switch to second user.
     $this->drupalLogin($this->user2);
+    // Verify that we ARE user2 and SEE what user2 saw before.
     $this->assertText($this->user2->name);
     $this->assertFieldByName('mail', $this->user2->mail);
 
     // Log out second user.
     $this->drupalLogout();
 
-    // Switch to first user and confirm that we're still logged in.
+    // Switch back to first user and confirm that we're still logged in.
     $this->drupalLogin($this->user1);
+    // Verify that we ARE user1 and SEE what user1 saw before.
+    $this->assertText($this->user1->name);
+    $this->assertFieldByName('mail', $this->user1->mail);
+
+    // Log the second user back in (was logged out above).
+    // Without passing TRUE, the first user would be logged out.
+    $this->drupalLogin($this->user2, TRUE);
+    $this->assertText($this->user2->name);
+    $this->clickLink(t('Edit'));
+
+    // Switch back to first user once more.
+    $this->drupalLogin($this->user1);
+    // Verify that we ARE user1 and SEE what user1 saw before.
     $this->assertText($this->user1->name);
     $this->assertFieldByName('mail', $this->user1->mail);
   }
