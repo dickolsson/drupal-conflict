@@ -5,6 +5,177 @@
  * Tests for conflict.module.
  */
 
+class ConflictWebTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
+  function setUp() {
+    $modules = func_get_args();
+    $modules = (isset($modules[0]) && is_array($modules[0]) ? $modules[0] : $modules);
+    parent::setUp($modules);
+
+    // Create two web users.
+    $this->user1 = $this->drupalCreateUser();
+    $this->user2 = $this->drupalCreateUser();
+  }
+
+  protected function drupalSwitchUser(stdClass $account) {
+    if (isset($account->curlHandle)) {
+      // Switch to the user session.
+      $this->loggedInUser = $account;
+      $this->curlHandle = $account->curlHandle;
+
+      // Restore internal browser state of the user.
+      if (isset($acccount->content)) {
+        $this->url = $account->url;
+        $this->content = $account->content;
+        $this->drupalSettings = $account->drupalSettings;
+      }
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Overrides DrupalWebTestCase::drupalLogin().
+   *
+   * @param object $user
+   *   The user account to log in.
+   * @param bool $create_concurrent_session
+   *   (optional) Whether to create a new, concurrent user session. Pass TRUE
+   *   for first login. Defaults to FALSE, which means that the currently logged
+   *   in user, if logged in, is logged out and back in (default behavior).
+   */
+  protected function drupalLogin(stdClass $user, $create_concurrent_session = FALSE) {
+    // If we're asked to create a new session, unset the current.
+    if ($create_concurrent_session) {
+      unset($this->curlHandle);
+      $this->loggedInUser = FALSE;
+    }
+    // If there is a session attached on $user already, try to use that directly.
+    elseif ($this->drupalSwitchUser($user)) {
+      $this->pass(t('User %name is still logged in.', array('%name' => $user->name)), t('User login'));
+      return;
+//      // Check whether the session is still valid.
+//      $output = $this->drupalGet('user');
+//      if (!strpos($output, 'user/login')) {
+//      }
+//      // The last known session is no longer valid; forget it and continue with
+//      // regular login below.
+//      unset($user->curlHandle);
+    }
+
+    // In any case, if we are logged in already and are asked to re-login, log
+    // out first.
+    if ($this->loggedInUser && $this->loggedInUser->uid == $user->uid) {
+      $this->drupalLogout();
+    }
+
+    $edit = array(
+      'name' => $user->name,
+      'pass' => $user->pass_raw
+    );
+    $this->drupalPost('user', $edit, t('Log in'));
+
+    // If a "log out" link appears on the page, it is almost certainly because
+    // the login was successful.
+    $pass = $this->assertLink(t('Log out'), 0, t('User %name successfully logged in.', array('%name' => $user->name)), t('User login'));
+
+    if ($pass) {
+      // Save the user's session on the account itself.
+      $user->curlHandle = $this->curlHandle;
+
+      // Switch the currently logged in user.
+      $this->loggedInUser = $user;
+    }
+  }
+
+  /**
+   * Overrides DrupalWebTestCase::drupalLogout().
+   *
+   * @param object $account
+   *   (optional) The user account to log out.
+   */
+  protected function drupalLogout(stdClass $account = NULL) {
+    // If a specific account was passed, ensure that we are operating on that
+    // user's session first.
+    if (isset($account) && (!$this->loggedInUser || $account->uid != $this->loggedInUser)) {
+      $this->drupalSwitchUser($account);
+    }
+
+    // Make a request to the logout page, and redirect to the user page, the
+    // idea being if you were properly logged out you should be seeing a login
+    // screen.
+    $this->drupalGet('user/logout');
+    $this->drupalGet('user');
+    $pass = $this->assertField('name', t('Username field found.'), t('Logout'));
+    $pass = $pass && $this->assertField('pass', t('Password field found.'), t('Logout'));
+
+    if ($pass) {
+      // Remove the user's session on the account itself.
+      unset($account->curlHandle);
+
+      // Switch to no session.
+      $this->loggedInUser = FALSE;
+    }
+  }
+
+  /**
+   * Overrides DrupalWebTestCase::drupalSetContent().
+   */
+  protected function drupalSetContent($content, $url = 'internal:') {
+    parent::drupalSetContent($content, $url);
+
+    // Clone the relevant results onto the currently logged in user
+    // account/session.
+    if (!empty($this->loggedInUser->curlHandle)) {
+      $this->loggedInUser->url = $this->url;
+      $this->loggedInUser->content = $this->content;
+      $this->loggedInUser->drupalSettings = $this->drupalSettings; 
+    }
+  }
+}
+
+class ConflictSwitchExampleTestCase extends ConflictWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'drupalSwitchUser() example',
+      'description' => 'Demonstrates drupalSwitchUser() usage.',
+      'group' => 'Conflict',
+    );
+  }
+
+  function testConcurrentLogin() {
+    // Login first user.
+    $this->drupalLogin($this->user1);
+    $this->assertText($this->user1->name);
+    $this->clickLink(t('Edit'));
+
+    // Login second user.
+    $this->drupalLogin($this->user2, TRUE);
+    $this->assertText($this->user2->name);
+    $this->clickLink(t('Edit'));
+
+    // Switch to first user.
+    $this->drupalLogin($this->user1);
+    // Verify that we ARE user1 and SEE what user1 saw before.
+    $this->assertText($this->user1->name);
+    $this->assertFieldByName('mail', $this->user1->mail);
+
+    // Switch to second user.
+    $this->drupalLogin($this->user2);
+    $this->assertText($this->user2->name);
+    $this->assertFieldByName('mail', $this->user2->mail);
+
+    // Log out second user.
+    $this->drupalLogout();
+
+    // Switch to first user and confirm that we're still logged in.
+    $this->drupalLogin($this->user1);
+    $this->assertText($this->user1->name);
+    $this->assertFieldByName('mail', $this->user1->mail);
+  }
+}
+
 class ConflictTestCase extends DrupalWebTestCase {
 
   public static function getInfo() {
