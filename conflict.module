@@ -51,7 +51,7 @@ function conflict_node_validate($node, &$form, &$form_state) {
     // Base node: The common ancestor that was cached when beginning the node edit.
     $nodes['base'] = clone($form_state['node']);
     // Theirs: The current state of the node, with the changes that happened in parallel.
-    $nodes['theirs'] = node_load($node->nid, NULL, TRUE);
+    $nodes['theirs'] = clone(node_load($node->nid, NULL, TRUE));
     // Mine: The node that was about to be saved.
     $nodes['mine'] = clone($node);
 
