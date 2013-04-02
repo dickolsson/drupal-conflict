@@ -22,14 +22,28 @@
  */
 function conflict_form_node_form_alter(&$form, &$form_state) {
   // Force caching enabled so the original $form['node'] survives multiple page requests.
-  $form_state['cache'] = TRUE;
+  if (variable_get('conflict_enable_' . $form['#node']->type, FALSE)) {
+    $form_state['cache'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_type_form.
+ */
+function conflict_form_node_type_form_alter(&$form, &$form_state) {
+  $form['submission']['conflict_enable'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Conflict resolution'),
+    '#description' => t('Enable field conflict resolution for this content type'),
+    '#default_value' => variable_get('conflict_enable_' . $form['#node_type']->type, FALSE),
+  );
 }
 
 /**
  * Implements hook_node_validate().
  */
 function conflict_node_validate($node, &$form, &$form_state) {
-  if (isset($node->nid) && (node_last_changed($node->nid) > $node->changed)) {
+  if (isset($node->nid) && (node_last_changed($node->nid) > $node->changed) && variable_get('conflict_enable_' . $node->type, FALSE)) {
     // We only support nodes for now.
     $entity_type = 'node';
 
