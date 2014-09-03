@@ -119,7 +119,7 @@ function conflict_node_validate($node, &$form, &$form_state) {
         drupal_set_message(t('The @label field was changed by another user. Please verify the updated value.', array('@label' => $instance['label'])), 'warning');
         $updated = TRUE;
       }
-      else {
+      elseif ($sum['mine'] != $sum['theirs']) {
         // Conflict!
         $conflicting = TRUE;
         $updated = TRUE;
