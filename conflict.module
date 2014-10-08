@@ -10,25 +10,25 @@
  * @todo
  *   - Figure out what to do about dependencies between fields?
  *   - Come up with a cleaner way to compare fields than the current hashing.
- *   - Figure out a way to inform the user as to what the other side of the conflict is?
+ *   - Figure out a way to inform the user as to what the other side of the
+ *     conflict is?
  *   - Handle things that aren't fields?
  *   - Handle non-nodes?
- *   - Limit to specific node types?
- *   - Handle title!
  */
 
 /**
- * Implements hook_form_FORM_ID_alter() for node_form.
+ * Implements hook_form_FORM_ID_alter().
  */
 function conflict_form_node_form_alter(&$form, &$form_state) {
-  // Force caching enabled so the original $form['node'] survives multiple page requests.
+  // Force caching enabled so the original $form['node'] survives multiple page
+  // requests.
   if (variable_get('conflict_enable_' . $form['#node']->type, FALSE)) {
     $form_state['cache'] = TRUE;
   }
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for node_type_form.
+ * Implements hook_form_FORM_ID_alter().
  */
 function conflict_form_node_type_form_alter(&$form, &$form_state) {
   $form['submission']['conflict_enable'] = array(
@@ -64,19 +64,19 @@ function conflict_node_validate($node, &$form, &$form_state) {
     }
 
     $nodes = array();
-    // Base node: The common ancestor that was cached when beginning the node edit.
+    // Base node: The common ancestor that was cached when beginning the node
+    // edit.
     $nodes['base'] = clone($form_state['node']);
-    // Theirs: The current state of the node, with the changes that happened in parallel.
+    // Theirs: The current state of the node, with the changes that happened in
+    // parallel.
     $nodes['theirs'] = clone(node_load($node->nid, NULL, TRUE));
     // Mine: The node that was about to be saved.
     $nodes['mine'] = clone($node);
 
     // Dig through the fields looking for conflicts.
-    $conflicting = FALSE; // Assume we can fix things unless proven otherwise.
     $updated = FALSE;
     $bundle = field_extract_bundle($entity_type, $nodes['mine']);
     $instances = field_info_instances($entity_type, $bundle);
-    $entity_info = entity_get_info($entity_type);
     $extra = field_info_extra_fields($entity_type, $bundle, 'form');
 
     if ($entity_type == 'node') {
@@ -107,13 +107,6 @@ function conflict_node_validate($node, &$form, &$form_state) {
         continue;
       }
       elseif ($sum['base'] == $sum['mine']) {
-        // Only theirs changed. We need to update our value.
-        $value = $f['theirs'];
-        if ($field_name == 'title') {
-          // Title is not really a field.
-          $value = $value[0];
-        }
-//        form_set_value($form[$field_name], $value, $form_state);
         // Forget the user-submitted value.
         unset($form_state['input'][$field_name]);
         drupal_set_message(t('The @label field was changed by another user. Please verify the updated value.', array('@label' => $instance['label'])), 'warning');
@@ -121,7 +114,6 @@ function conflict_node_validate($node, &$form, &$form_state) {
       }
       elseif ($sum['mine'] != $sum['theirs']) {
         // Conflict!
-        $conflicting = TRUE;
         $updated = TRUE;
         drupal_set_message(t('The @label field was changed by another user while you were editing it. Save again to overwrite it.', array('@label' => $instance['label'])), 'error');
       }
