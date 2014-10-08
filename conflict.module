@@ -70,62 +70,133 @@ function conflict_node_validate($node, &$form, &$form_state) {
     // Theirs: The current state of the node, with the changes that happened in
     // parallel.
     $nodes['theirs'] = clone(node_load($node->nid, NULL, TRUE));
+    _field_invoke_multiple('load', 'node', array($nodes['theirs']->nid => $nodes['theirs']));
     // Mine: The node that was about to be saved.
-    $nodes['mine'] = clone($node);
+    $tmp_form_state = $form_state;
+    $nodes['mine'] = node_form_submit_build_node($form, $tmp_form_state);
+    _field_invoke_multiple('load', 'node', array($nodes['mine']->nid => $nodes['mine']));
 
     // Dig through the fields looking for conflicts.
     $updated = FALSE;
-    $bundle = field_extract_bundle($entity_type, $nodes['mine']);
-    $instances = field_info_instances($entity_type, $bundle);
-    $extra = field_info_extra_fields($entity_type, $bundle, 'form');
-
-    if ($entity_type == 'node') {
-      $instances[] = array(
-        'field_name' => 'title',
-        'label' => $extra['title']['label'],
-      );
-      // Pretend node title is a real field.
-      foreach (array('base', 'theirs', 'mine') as $k) {
-        if (!is_array($nodes[$k]->title)) {
-          $nodes[$k]->title = array(FALSE => array($nodes[$k]->title));
-        }
+    $remote_changes = _conflict_get_node_changes($nodes['base'], $nodes['theirs']);
+    if (!empty($remote_changes)) {
+      $local_changes = _conflict_get_node_changes($nodes['mine'], $nodes['base']);
+      $real_changes = _conflict_get_node_changes($nodes['mine'], $nodes['theirs']);
+      $conflicted_fields = array_intersect($local_changes, $remote_changes, $real_changes);
+      $changed_fields = array_diff($remote_changes, array_intersect($local_changes, $remote_changes));
+      foreach ($conflicted_fields as $field_name => $field_title) {
+        drupal_set_message(t('The @label field was changed by another user while you were editing it. Save again to overwrite it.', array('@label' => $field_title)), 'error');
+        $updated = TRUE;
       }
-    }
-
-    foreach ($instances as $instance) {
-      $field_name = $instance['field_name'];
-      $langcode = field_language('node', $nodes['mine'], $field_name);
-      foreach (array('base', 'theirs', 'mine') as $k) {
-        $f[$k] = isset($nodes[$k]->{$field_name}[$langcode]) ? $nodes[$k]->{$field_name}[$langcode] : array();
-        // Checksum the data so it's directly comparable.
-        $sum[$k] = md5(serialize($f[$k]));
-      }
-
-      if ($sum['base'] == $sum['theirs']) {
-        // No changes, or only mine changed.
-        // We don't need to do anything about this field.
-        continue;
-      }
-      elseif ($sum['base'] == $sum['mine']) {
+      foreach ($changed_fields as $field_name => $field_title) {
         // Forget the user-submitted value.
         unset($form_state['input'][$field_name]);
-        drupal_set_message(t('The @label field was changed by another user. Please verify the updated value.', array('@label' => $instance['label'])), 'warning');
+        drupal_set_message(t('The @label field was changed by another user. Please verify the updated value.', array('@label' => $field_title)), 'warning');
         $updated = TRUE;
-      }
-      elseif ($sum['mine'] != $sum['theirs']) {
-        // Conflict!
-        $updated = TRUE;
-        drupal_set_message(t('The @label field was changed by another user while you were editing it. Save again to overwrite it.', array('@label' => $instance['label'])), 'error');
       }
     }
 
     if ($updated) {
       // Reload the node to pick up the updated data.
       $node = clone($nodes['theirs']);
-      $node->title = $node->title[FALSE][0];
       node_object_prepare($node);
       $form_state['node'] = $node;
       $form_state['rebuild'] = TRUE;
     }
   }
+}
+
+/**
+ * Helper function. Get differences between two nodes.
+ */
+function _conflict_get_node_changes($node, $unchanged) {
+  $items = array();
+
+  $bundle = field_extract_bundle('node', $node);
+  $instances = field_info_instances('node', $bundle);
+  $properties = array(
+    'title' => array (
+      'field_name' => 'title',
+      'label' => t('Node title')
+    ),
+    'created' => array (
+      'field_name' => 'date',
+      'label' => t('Authored on date'),
+    ),
+    'uid' => array (
+      'field_name' => 'name',
+      'label' => t('Authored by'),
+    )
+  );
+
+  foreach ($properties as $property => $property_value) {
+    $same = $node->$property == $unchanged->$property;
+    if (!$same) {
+      $items[$property_value['field_name']] = $property_value['label'];
+    }
+  }
+
+  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
+    $field = field_info_field($field_name);
+    $field_language = field_language('node', $node, $field_name);
+    $old_value = empty($unchanged->{$field_name}[$field_language]) ? NULL : $unchanged->{$field_name}[$field_language];
+    if (!empty($old_value) && $field['type'] == 'taxonomy_term_reference') {
+      // Thanks to core being inconsistent, $node->original only contains
+      // taxonomy term IDs (tids) for term reference fields, whereas $node
+      // itself contains everything (tid, name, description, etc). We need to
+      // store the full data as part of the nodechanges field here, since when
+      // it comes time to display, if a term has since been removed from the
+      // system, we can no longer load it at that point. So, we load
+      // everything here to make sure we've got it all for now and forever.
+      $tids = array();
+      foreach ($old_value as $key => $value) {
+        if (empty($value['tid'])) {
+          unset($old_value[$key]);
+        }
+        else {
+          $tids[] = $value['tid'];
+        }
+      }
+      if (!empty($tids)) {
+        $terms = taxonomy_term_load_multiple($tids);
+        foreach ($old_value as $key => $value) {
+          $tid = $value['tid'];
+          if (!empty($terms[$tid])) {
+            $old_value[$key] = (array)$terms[$tid];
+          }
+        }
+      }
+    }
+    $new_value = empty($node->{$field_name}[$field_language]) ? NULL : $node->{$field_name}[$field_language];
+    if (!empty($new_value) && $field['type'] == 'image') {
+      // uri is required to show image, see theme_image_formatter(), but does
+      // not exist in new value of image field.
+      foreach ($new_value as $key => $value) {
+        $new_value[$key]['uri'] = file_load($value['fid'])->uri;
+      }
+    }
+    $same = empty($old_value) == empty($new_value);
+    if ($same && !empty($old_value)) {
+      $old_deltas = array_keys($old_value);
+      $new_deltas = array_keys($new_value);
+      $same = !array_diff($old_deltas, $new_deltas) && !array_diff($new_deltas, $old_deltas);
+      if ($same) {
+        $columns = array_keys($field['columns']);
+        foreach ($old_value as $delta => $old_items) {
+          foreach ($columns as $column) {
+            $set = isset($old_items[$column]);
+            if (($set != isset($new_value[$delta][$column])) || ($set && $old_items[$column] != $new_value[$delta][$column])) {
+              $same = FALSE;
+              break;
+            }
+          }
+        }
+      }
+    }
+    if (!$same) {
+      $items[$field_name] = $instances[$field_name]['label'];
+    }
+  }
+
+  return $items;
 }
