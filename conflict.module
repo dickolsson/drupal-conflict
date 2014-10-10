@@ -115,15 +115,15 @@ function _conflict_get_node_changes($node, $unchanged) {
   $bundle = field_extract_bundle('node', $node);
   $instances = field_info_instances('node', $bundle);
   $properties = array(
-    'title' => array (
+    'title' => array(
       'field_name' => 'title',
-      'label' => t('Node title')
+      'label' => t('Title')
     ),
-    'created' => array (
+    'created' => array(
       'field_name' => 'date',
       'label' => t('Authored on date'),
     ),
-    'uid' => array (
+    'uid' => array(
       'field_name' => 'name',
       'label' => t('Authored by'),
     )
