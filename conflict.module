@@ -25,6 +25,13 @@ function conflict_form_node_form_alter(&$form, &$form_state) {
   if (variable_get('conflict_enable_' . $form['#node']->type, FALSE)) {
     $form_state['cache'] = TRUE;
   }
+
+  // Highlight conflict or expired fields.
+  if (!empty($form_state['temporary']['conflict_fields'])) {
+    foreach ($form_state['temporary']['conflict_fields'] as $field_name) {
+      _conflict_apply_error($form[$field_name]);
+    }
+  }
 }
 
 /**
@@ -70,11 +77,15 @@ function conflict_node_validate($node, &$form, &$form_state) {
     // Theirs: The current state of the node, with the changes that happened in
     // parallel.
     $nodes['theirs'] = clone(node_load($node->nid, NULL, TRUE));
+    // This workaround is done because the $node object in this hook does not
+    // have processed fields and would be innconsistent during comparison.
     _field_invoke_multiple('load', 'node', array($nodes['theirs']->nid => $nodes['theirs']));
     // Mine: The node that was about to be saved.
     $tmp_form_state = $form_state;
     $nodes['mine'] = node_form_submit_build_node($form, $tmp_form_state);
     _field_invoke_multiple('load', 'node', array($nodes['mine']->nid => $nodes['mine']));
+    // Store fields names to highlight them after form rebuild.
+    $error_fields = array();
 
     // Dig through the fields looking for conflicts.
     $updated = FALSE;
@@ -87,12 +98,14 @@ function conflict_node_validate($node, &$form, &$form_state) {
       foreach ($conflicted_fields as $field_name => $field_title) {
         drupal_set_message(t('The @label field was changed by another user while you were editing it. Save again to overwrite it.', array('@label' => $field_title)), 'error');
         $updated = TRUE;
+        $error_fields[] = $field_name;
       }
       foreach ($changed_fields as $field_name => $field_title) {
         // Forget the user-submitted value.
         unset($form_state['input'][$field_name]);
         drupal_set_message(t('The @label field was changed by another user. Please verify the updated value.', array('@label' => $field_title)), 'warning');
         $updated = TRUE;
+        $error_fields[] = $field_name;
       }
     }
 
@@ -102,7 +115,28 @@ function conflict_node_validate($node, &$form, &$form_state) {
       node_object_prepare($node);
       $form_state['node'] = $node;
       $form_state['rebuild'] = TRUE;
+      $form_state['temporary']['conflict_fields'] = $error_fields;
     }
+  }
+}
+
+/**
+ * Iterate all elements children recursively and set error class.
+ *
+ * @param array $elements
+ */
+function _conflict_apply_error(&$elements) {
+  // Iterate through all children.
+  foreach (element_children($elements) as $key) {
+    if (isset($elements[$key]) && $elements[$key]) {
+      _conflict_apply_error($elements[$key]);
+    }
+  }
+  // If there are properties, it's probably safe to set #attributes here.
+  // Ignore container elements, because 'error' class adds a weird style there.
+  $element_properties = element_properties($elements);
+  if (!empty($element_properties) && (isset($elements['#type']) && $elements['#type'] != 'container')) {
+    $elements['#attributes']['class'][] = 'error';
   }
 }
 
