@@ -78,7 +78,7 @@ function conflict_node_validate($node, &$form, &$form_state) {
     // parallel.
     $nodes['theirs'] = clone(node_load($node->nid, NULL, TRUE));
     // This workaround is done because the $node object in this hook does not
-    // have processed fields and would be innconsistent during comparison.
+    // have processed fields and would be inconsistent during comparison.
     _field_invoke_multiple('load', 'node', array($nodes['theirs']->nid => $nodes['theirs']));
     // Mine: The node that was about to be saved.
     $tmp_form_state = $form_state;
