@@ -4,9 +4,33 @@ namespace Drupal\conflict;
 
 class ConflictManager implements ConflictManagerInterface {
 
+    protected $resolvers = [];
+
+    public function applies() {
+        return TRUE;
+    }
+
     public function addAncestorResolver(ConflictAncestorResolverInterface $resolver)
     {
-        // TODO: Implement addAncestorResolver() method.
+        $this->resolvers[] = $resolver;
+    }
+
+    public function resolveLowestCommonAncestor($revision1, $revision2)
+    {
+        foreach ($this->resolvers as $resolver) {
+            if ($resolver->applies()) {
+                return $resolver->resolve($revision1, $revision2);
+            }
+        }
+        echo "No revision found";
+        return -1;
+    }
+
+    public function resolve($revision1, $revision2) {
+        if ($revision1 < $revision2) {
+            return $revision1-1;
+        }
+        return $revision2-1;
     }
 
     public function addConflictResolver(ConflictResolverInterface $resolver)
@@ -14,10 +38,6 @@ class ConflictManager implements ConflictManagerInterface {
         // TODO: Implement addConflictResolver() method.
     }
 
-    public function resolveLowestCommonAncestor($revision1, $revision2)
-    {
-        // TODO: Implement resolveLowestCommonAncestor() method.
-    }
 
     public function resolveConflict($revision1, $revision2, $revision3)
     {

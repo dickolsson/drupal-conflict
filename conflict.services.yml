@@ -2,4 +2,4 @@ services:
   conflict.conflict_manager:
     class: Drupal\conflict\ConflictManager
     tags:
-      - { name: conflict_collector, tag: conflict_manager, call: addAncestorResolver}
+      - { name: service_collector, tag: conflict_manager, call: addAncestorResolver, priority: 10}
