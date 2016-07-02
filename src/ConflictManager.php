@@ -2,6 +2,9 @@
 
 namespace Drupal\conflict;
 
+use Drupal\conflict\ConflictManagerInterface;
+use Drupal\conflict\ConflictAncestorResolverInterface;
+
 class ConflictManager implements ConflictManagerInterface {
 
     protected $resolvers = [];
