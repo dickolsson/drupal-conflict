@@ -1,14 +1,17 @@
 <?php
 
-namespace Drupal\conflict\Tests;
+namespace Drupal\Tests\conflict\Unit;
 
-use Drupal\Tests\UnitTestCase;
-use Drupal\Core\Entity\Entity;
+use Drupal\core\Entity\Entity;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\conflict;
 
-class SimpleLcaTest extends UnitTestCase {
+/**
+ * @group conflict
+ */
+class LcaResolverTest extends KernelTestBase {
 
-    public function basicTest() {
+    public function testsimple  () {
         $entity = EntityTest::create(['label' => 'revision 1']);
         $entity->save();
         $entity->label = 'revision 2';
