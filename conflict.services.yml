@@ -2,4 +2,20 @@ services:
   conflict.conflict_manager:
     class: Drupal\conflict\ConflictManager
     tags:
-      - { name: service_collector, tag: conflict_manager, call: addAncestorResolver, priority: 10}
+      - { name: service_collector, tag: conflict_resolver, call: addAncestorResolver}
+  conflict.simplelca_resolver:
+      class: Drupal\conflict\ConflictManager
+      tags:
+        - { name: service_collector, tag: lca_resolver, call: resolveLowestCommonAncestor}
+  conflict.complexlca_resolver:
+    class: Drupal\conflict\ConflictManager
+    tags:
+      - { name: service_collector, tag: lca_resolver, call: addAncestorResolver}
+  conflict.simplemerge_conflict:
+      class: Drupal\conflict\ConflictManager
+      tags:
+        - { name: service_collector, tag: merge_resolver, call: addAncestorResolver}
+  conflict.complexmerge_conflict:
+      class: Drupal\conflict\ConflictManager
+      tags:
+        - { name: service_collector, tag: merge_resolver, call: addAncestorResolver}
