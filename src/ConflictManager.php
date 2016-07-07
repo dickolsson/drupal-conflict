@@ -2,18 +2,15 @@
 
 namespace Drupal\conflict;
 
-use Drupal\conflict\ConflictManagerInterface;
 use Drupal\conflict\ConflictAncestorResolverInterface;
 
-class ConflictManager implements ConflictManagerInterface {
+class ConflictManager
+{
 
     protected $resolvers = [];
 
-    public function applies() {
-        return TRUE;
-    }
-    
-    public function addLcaResolver(ConflictManagerInterface $resolver) {
+    public function addLcaResolver(ConflictAncestorResolverInterface $resolver)
+    {
         $this->resolvers[] = $resolver;
     }
 

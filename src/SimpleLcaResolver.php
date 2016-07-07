@@ -10,7 +10,6 @@ class SimpleLcaResolver implements ConflictAncestorResolverInterface
         }
         return $revision2-1;
     }
-
     public function applies()
     {
         return True;

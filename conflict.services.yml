@@ -4,7 +4,7 @@ services:
     tags:
       - { name: service_collector, tag: conflict_resolver, call: addLcaResolver}
   conflict.simplelca_resolver:
-      class: Drupal\conflict\LcaResolver
+      class: Drupal\conflict\SimpleLcaResolver
       tags:
         - { name: conflict_resolver, priority: 10}
 #  conflict.complexlca_resolver:
