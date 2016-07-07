@@ -16,4 +16,15 @@ class ConflictManager implements ConflictManagerInterface {
     public function addResolver(ConflictManagerInterface $resolver) {
         $this->resolvers[] = $resolver;
     }
+
+    public function resolveLowestCommonAncestor($revision1, $revision2)
+    {
+        foreach ($this->resolvers as $resolver) {
+            if ($resolver->applies()) {
+                return $resolver->resolve($revision1, $revision2);
+            }
+        }
+        echo "No revision found";
+        return -1;
+    }
 }

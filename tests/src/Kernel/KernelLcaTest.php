@@ -3,35 +3,43 @@
 namespace Drupal\Tests\conflict\Kernel;
 
 use Drupal;
-use Drupal\entity_test\Entity\EntityTest;
-use Drupal\KernelTests\KernelTestBase;
+use Drupal\entity_test\Entity\EntityTestRev;
 use Drupal\conflict;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
-use Drupal\simpletest\TestBase;
 
 /**
  * @group conflict
  */
 class KernelLcaTest extends EntityKernelTestBase {
+
+    protected $entityType;
     /**
      * Modules to enable.
      *
      * @var array
      */
-    public static $modules = ['entity_test', 'conflict'];
-    
-    public function testsimple  () {
-        $entity = EntityTest::create(['label' => 'revision 1']);
+    public static $modules = ['entity_test', 'conflict', 'system', 'user'];
+
+    protected function setUp()
+    {
+        // First setup the needed entity types before installing the views.
+        parent::setUp();
+        $this->installEntitySchema('entity_test');
+        $this->installEntitySchema('entity_test_rev');
+    }
+
+        public function testsimple() {
+        $entity = EntityTestRev::create(['name' => 'revision 1']);
         $entity->save();
-        $entity->label = ['revision 2'];
+        $entity->set('name', 'revision 2');
         $entity->save();
-        $entity->label =['revision 3'];
+        $entity->set('name', 'revision 2');
         $entity->save();
         $revision2 = Drupal::entityTypeManager()
-            ->getStorage('entity_test')
+            ->getStorage('entity_test_rev')
             ->loadRevision(2);
         $revision3 = Drupal::entityTypeManager()
-            ->getStorage('entity_test')
+            ->getStorage('entity_test_rev')
             ->loadRevision(3);
 
         $manager = Drupal::service('conflict.conflict_manager');
