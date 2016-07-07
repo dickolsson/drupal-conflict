@@ -2,7 +2,7 @@ services:
   conflict.conflict_manager:
     class: Drupal\conflict\ConflictManager
     tags:
-      - { name: service_collector, tag: conflict_resolver, call: addResolver}
+      - { name: service_collector, tag: conflict_resolver, call: addLcaResolver}
   conflict.simplelca_resolver:
       class: Drupal\conflict\LcaResolver
       tags:

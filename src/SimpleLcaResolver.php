@@ -2,10 +2,7 @@
 
 namespace Drupal\conflict;
 
-
-use Symfony\Component\Validator\Constraints\True;
-
-class LcaResolver implements ConflictManagerInterface
+class SimpleLcaResolver implements ConflictAncestorResolverInterface
 {
     public function resolve($revision1, $revision2) {
       if ($revision1 < $revision2) {

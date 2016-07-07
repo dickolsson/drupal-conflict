@@ -13,7 +13,7 @@ class ConflictManager implements ConflictManagerInterface {
         return TRUE;
     }
     
-    public function addResolver(ConflictManagerInterface $resolver) {
+    public function addLcaResolver(ConflictManagerInterface $resolver) {
         $this->resolvers[] = $resolver;
     }
 
@@ -24,7 +24,6 @@ class ConflictManager implements ConflictManagerInterface {
                 return $resolver->resolve($revision1, $revision2);
             }
         }
-        echo "No revision found";
         return -1;
     }
 }

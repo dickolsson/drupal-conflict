@@ -8,8 +8,6 @@ namespace Drupal\conflict;
  * @ingroup conflict
  */
 interface ConflictAncestorResolverInterface {
-
-    public function applies();
     
-    public function resolveLowestCommonAncestor($revision1, $revision2);
+    public function resolve($revision1, $revision2);
 }
