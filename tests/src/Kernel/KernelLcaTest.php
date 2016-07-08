@@ -29,21 +29,26 @@ class KernelLcaTest extends EntityKernelTestBase {
     }
 
         public function testsimple() {
-        $entity = EntityTestRev::create(['name' => 'revision 1']);
-        $entity->save();
-        $entity->set('name', 'revision 2');
-        $entity->save();
-        $entity->set('name', 'revision 2');
-        $entity->save();
-        $revision2 = Drupal::entityTypeManager()
-            ->getStorage('entity_test_rev')
-            ->loadRevision(2);
-        $revision3 = Drupal::entityTypeManager()
-            ->getStorage('entity_test_rev')
-            ->loadRevision(3);
+            $entity = EntityTestRev::create(['name' => 'revision 1']);
+            $entity->save();
+            $entity->setName('revision 2');
+            $entity->save();
+            $entity->setName('revision 3');
+            $entity->save();
+            $entity->setName('revision 4');
+            $entity->save();
+            $revision2 = Drupal::entityTypeManager()
+                ->getStorage('entity_test_rev')
+                ->loadRevision(2);
+            $revision3 = Drupal::entityTypeManager()
+                ->getStorage('entity_test_rev')
+                ->loadRevision(3);
 
-        $manager = Drupal::service('conflict.conflict_manager');
-        $revisionLca = $manager->resolveLowestCommonAncestor($revision2, $revision3);
-        $this->assertFalse($revisionLca == "revision 1");
+            $manager = Drupal::service('conflict.conflict_manager');
+            $revisionLcaid = $manager->resolveLowestCommonAncestor($revision2, $revision3);
+            $revisionLca = Drupal::entityTypeManager()
+                ->getStorage('entity_test_rev')
+                ->loadRevision($revisionLcaid);
+            $this->assertEquals($revisionLca['name'], "revision 2");
     }
 }

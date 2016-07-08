@@ -2,7 +2,7 @@
 
 namespace Drupal\conflict;
 
-use Drupal\conflict\ConflictAncestorResolverInterface;
+use Drupal\Core\Entity\RevisionableInterface;
 
 class ConflictManager
 {
@@ -14,13 +14,10 @@ class ConflictManager
         $this->resolvers[] = $resolver;
     }
 
-    public function resolveLowestCommonAncestor($revision1, $revision2)
+    public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2)
     {
         foreach ($this->resolvers as $resolver) {
-            if ($resolver->applies()) {
-                return $resolver->resolve($revision1, $revision2);
-            }
+                return resolve($revision1, $revision2);
         }
-        return -1;
     }
 }
