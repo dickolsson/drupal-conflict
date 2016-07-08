@@ -17,7 +17,9 @@ class ConflictManager
     public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2)
     {
         foreach ($this->resolvers as $resolver) {
-                return resolve($revision1, $revision2);
+            if ($resolver->applies()) {
+                return $resolver->resolve($revision1, $revision2);
+            }
         }
     }
 }
