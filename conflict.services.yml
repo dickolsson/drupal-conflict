@@ -11,10 +11,14 @@ services:
 #    class: Drupal\conflict\ConflictManager
 #    tags:
 #      - { name: service_collector, tag: lca_resolver, call: addAncestorResolver}
-#  conflict.simplemerge_conflict:
-#      class: Drupal\conflict\ConflictManager
-#      tags:
-#        - { name: service_collector, tag: merge_resolver, call: addAncestorResolver}
+  conflict.simplemerge_resolver:
+      class: Drupal\conflict\ConflictManager
+      tags:
+        - { name: service_collector, tag: merge_resolver, call: addConflictResolver}
+  conflict.simplelca_resolver:
+     class: Drupal\conflict\SimpleMergeResolver
+     tags:
+        - { name: merge_resolver, priority: 10}
 #  conflict.complexmerge_conflict:
 #      class: Drupal\conflict\ConflictManager
 #      tags:
