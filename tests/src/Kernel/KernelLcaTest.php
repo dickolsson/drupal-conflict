@@ -57,7 +57,7 @@ class KernelLcaTest extends EntityKernelTestBase {
             ->getStorage('entity_test_rev')
             ->loadRevision(4);
 
-        $manager = Drupal::service('conflict.conflict_manager');
+        $manager = Drupal::service('conflict.lca_manager');
 
         // Gets the parent id for revision 2 and 3.
         $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision2, $revision3);

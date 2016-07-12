@@ -1,12 +1,12 @@
 services:
-  conflict.conflict_manager:
-    class: Drupal\conflict\ConflictManager
+  conflict.lca_manager:
+    class: Drupal\conflict\LcaManager
     tags:
-      - { name: service_collector, tag: conflict_resolver, call: addLcaResolver}
+      - { name: service_collector, tag: lca_resolver, call: addLcaResolver}
   conflict.simplelca_resolver:
       class: Drupal\conflict\SimpleLcaResolver
       tags:
-        - { name: conflict_resolver, priority: 10}
+        - { name: lca_resolver, priority: 10}
 #  conflict.complexlca_resolver:
 #    class: Drupal\conflict\ConflictManager
 #    tags:
