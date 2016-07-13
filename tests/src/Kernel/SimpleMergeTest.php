@@ -32,7 +32,7 @@ class SimpleMergeTest extends EntityKernelTestBase {
    * then performs a simple algorithm to
    * find common parent of two revisions.
    */
-  public function testsimpleMergeResolver($newest_revision) {
+  public function testsimpleMergeResolver() {
 	// Creates a new entity
 	$entity = EntityTestRev::create(['name' => 'revision 1']);
 	$entity->save();
@@ -76,7 +76,7 @@ class SimpleMergeTest extends EntityKernelTestBase {
 	  ->getStorage('entity_test_rev')
 	  ->loadRevision($newest_revision1);
 	$this->assertEquals($revisionLca->label(), "revision 4");
-	  
+
 	//This test will pass as it returns "revision 6"
     $newest_revision2 = $manager->resolveSimpleMerge($revision2, $revision3, $revision4);
     $revisionLca = Drupal::entityTypeManager()
