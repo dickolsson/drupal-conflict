@@ -70,16 +70,14 @@ class SimpleMergeTest extends EntityKernelTestBase {
       ->getStorage('entity_test_rev')
       ->loadRevision(6);
 
-    // This test will fail. It is expected to return "revision 6"
-    $manager = Drupal::service('conflict.simplemerge_resolver');
+    $manager = Drupal::service('conflict.merge.manager');
     $newest_revision1 = $manager->resolveSimpleMerge($revision2, $revision3, $revision4);
     $revisionLca = Drupal::entityTypeManager()
       ->getStorage('entity_test_rev')
       ->loadRevision($newest_revision1);
     $this->assertEquals($revisionLca->label(), "revision 4");
 
-    //This test will pass as it returns "revision 6"
-    $newest_revision2 = $manager->resolveSimpleMerge($revision2, $revision3, $revision4);
+    $newest_revision2 = $manager->resolveSimpleMerge($revision2, $revision3, $revision6);
     $revisionLca = Drupal::entityTypeManager()
       ->getStorage('entity_test_rev')
       ->loadRevision($newest_revision2);
