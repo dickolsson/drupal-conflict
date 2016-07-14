@@ -7,11 +7,11 @@ services:
       class: Drupal\conflict\SimpleLcaResolver
       tags:
         - { name: lca_resolver, priority: 10}
-  conflict.simplemerge_resolver:
+  conflict.merge_manager:
       class: Drupal\conflict\ConflictManager
       tags:
         - { name: service_collector, tag: merge_resolver, call: addConflictResolver}
-  conflict.simplelca_resolver:
+  conflict.simplemerge_resolver:
      class: Drupal\conflict\SimpleMergeResolver
      tags:
         - { name: merge_resolver, priority: 10}

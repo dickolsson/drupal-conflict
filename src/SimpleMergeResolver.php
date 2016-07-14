@@ -15,7 +15,7 @@ class SimpleMergeResolver implements ConflictResolverInterface
   {
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();
-    $revid3 = $revision2->getRevisionId();
-    return min($revid1, $revid2, $revid3);
+    $revid3 = $revision3->getRevisionId();
+    return max($revid1, $revid2, $revid3);
   }
 }
