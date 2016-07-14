@@ -2,4 +2,3 @@ name: Conflict
 description: Fieldwise conflict prevention and resolution.
 type: module
 core: 8.x
-

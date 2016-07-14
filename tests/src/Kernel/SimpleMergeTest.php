@@ -46,12 +46,12 @@ class SimpleMergeTest extends EntityKernelTestBase {
 	$entity->setName('revision 4');
 	$entity->setNewRevision();
 	$entity->save();
-    $entity->setName('revision 5');
-    $entity->setNewRevision();
-    $entity->save();
-    $entity->setName('revision 6');
-    $entity->setNewRevision();
-    $entity->save();
+	$entity->setName('revision 5');
+	$entity->setNewRevision();
+	$entity->save();
+	$entity->setName('revision 6');
+	$entity->setNewRevision();
+	$entity->save();
 	// Load the revisions from database.
 	$revision2 = Drupal::entityTypeManager()
 	  ->getStorage('entity_test_rev')
@@ -62,10 +62,10 @@ class SimpleMergeTest extends EntityKernelTestBase {
 	$revision4 = Drupal::entityTypeManager()
 	  ->getStorage('entity_test_rev')
 	  ->loadRevision(4);
-  	$revision5 = Drupal::entityTypeManager()
+	$revision5 = Drupal::entityTypeManager()
 	  ->getStorage('entity_test_rev')
 	  ->loadRevision(5);
-    $revision6 = Drupal::entityTypeManager()
+	$revision6 = Drupal::entityTypeManager()
 	  ->getStorage('entity_test_rev')
 	  ->loadRevision(6);
 

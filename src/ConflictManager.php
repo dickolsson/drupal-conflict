@@ -6,7 +6,6 @@ use Drupal\Core\Entity\RevisionableInterface;
 
 class ConflictManager
 {
-
     protected $resolvers = [];
     
     public function addConflictResolver(ConflictResolverInterface $resolver)
