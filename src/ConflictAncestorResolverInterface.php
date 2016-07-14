@@ -9,6 +9,7 @@ use Drupal\Core\Entity\RevisionableInterface;
  * @ingroup conflict
  */
 interface ConflictAncestorResolverInterface {
-    
-    public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2);
+
+  public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2);
+
 }
