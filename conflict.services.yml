@@ -7,10 +7,6 @@ services:
       class: Drupal\conflict\SimpleLcaResolver
       tags:
         - { name: lca_resolver, priority: 10}
-#  conflict.complexlca_resolver:
-#    class: Drupal\conflict\ConflictManager
-#    tags:
-#      - { name: service_collector, tag: lca_resolver, call: addAncestorResolver}
   conflict.simplemerge_resolver:
       class: Drupal\conflict\ConflictManager
       tags:
@@ -19,7 +15,3 @@ services:
      class: Drupal\conflict\SimpleMergeResolver
      tags:
         - { name: merge_resolver, priority: 10}
-#  conflict.complexmerge_conflict:
-#      class: Drupal\conflict\ConflictManager
-#      tags:
-#        - { name: service_collector, tag: merge_resolver, call: addAncestorResolver}
