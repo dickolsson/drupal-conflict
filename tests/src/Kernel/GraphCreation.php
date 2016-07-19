@@ -7,30 +7,9 @@ use Fhaculty\Graph\Graph as Graph;
 
 class GraphCreation
 {
-    public function rev_store($old)
-    {
-        if(array_key_exists('#rev', $old)){
-            $index[] = $old['#rev'];
-            foreach ($old['children'] as $values)
-            $this->rev_store($values);
-        }
-        else {
-           foreach ($old as $item) {
-               $index[] = $item['#rev'];
-           }
-            foreach ($item['children'] as $value) {
-               $this->rev_store($value);
-           }
-       }
-        print_r($index);
-        return $index;
-    }
-    public function simipleTest()
-    {
-        $values = array();
-        $graph = new Graph();
-        $index = [];
-        $old = array(
+
+    public function abc() {
+        $array1 = array(
             array(
                 '#type' => 'rev',
 //                '#uuid' => $uuid,
@@ -107,12 +86,23 @@ class GraphCreation
                 )
             )
         );
-        $values = $this->rev_store($old);
-        return $values;
+//        print_r($array1);
+        $x = $this->creator($array1);
     }
 
+    public function creator($arr) {
+        $vertices = [];
+        $graph = new Graph();
+        foreach ($arr as $value) {
+            array_push($vertices,$value['#rev']);
+            if (count($value['children'])) {
+                $this->creator($value['children']);
+            }
+        }
+        print_r($vertices);
+        return $vertices;
+    }
 }
 
 $a = new GraphCreation();
-$b = $a->simipleTest();
-//print_r($b);
+$a->abc();
