@@ -28,10 +28,10 @@ class SimpleMergeTest extends EntityKernelTestBase {
   }
 
   /**
-  * Creates an entity and it's revisions
-  * then performs a simple algorithm to
-  * find common parent of two revisions.
-  */
+   * Creates an entity and it's revisions
+   * then performs a simple algorithm to
+   * find common parent of two revisions.
+   */
   public function testsimpleMergeResolver()
   {
     // Creates a new entity
@@ -55,35 +55,34 @@ class SimpleMergeTest extends EntityKernelTestBase {
     $entity->save();
     // Load the revisions from database.
     $revision2 = Drupal::entityTypeManager()
-      ->getStorage('entity_test_rev')
-      ->loadRevision(2);
+        ->getStorage('entity_test_rev')
+        ->loadRevision(2);
     $revision3 = Drupal::entityTypeManager()
-      ->getStorage('entity_test_rev')
-      ->loadRevision(3);
+        ->getStorage('entity_test_rev')
+        ->loadRevision(3);
     $revision4 = Drupal::entityTypeManager()
-      ->getStorage('entity_test_rev')
-      ->loadRevision(4);
+        ->getStorage('entity_test_rev')
+        ->loadRevision(4);
     $revision5 = Drupal::entityTypeManager()
-      ->getStorage('entity_test_rev')
-      ->loadRevision(5);
+        ->getStorage('entity_test_rev')
+        ->loadRevision(5);
     $revision6 = Drupal::entityTypeManager()
-      ->getStorage('entity_test_rev')
-      ->loadRevision(6);
+        ->getStorage('entity_test_rev')
+        ->loadRevision(6);
 
-	// This test will fail. It is expected to return "revision 6"
-	$manager = Drupal::service('conflict.merge_manager');
-	$newest_revision1 = $manager->resolveSimpleMerge($revision2, $revision3, $revision4);
-	$revisionLca = Drupal::entityTypeManager()
-	  ->getStorage('entity_test_rev')
-	  ->loadRevision($newest_revision1);
-	$this->assertEquals($revisionLca->label(), "revision 4");
+    $manager = Drupal::service('conflict.merge_manager');
+    $newest_revision1 = $manager->resolveSimpleMerge($revision2, $revision3, $revision4);
+    $revisionLca = Drupal::entityTypeManager()
+        ->getStorage('entity_test_rev')
+        ->loadRevision($newest_revision1);
+    $this->assertEquals($revisionLca->label(), "revision 4");
 
-	//This test will pass as it returns "revision 6"
-	$newest_revision2 = $manager->resolveSimpleMerge($revision2, $revision3, $revision6);
-	$revisionLca = Drupal::entityTypeManager()
-	  ->getStorage('entity_test_rev')
-	  ->loadRevision($newest_revision2);
-	$this->assertEquals($revisionLca->label(), "revision 6");
+    //This test will pass as it returns "revision 6"
+    $newest_revision2 = $manager->resolveSimpleMerge($revision2, $revision3, $revision6);
+    $revisionLca = Drupal::entityTypeManager()
+        ->getStorage('entity_test_rev')
+        ->loadRevision($newest_revision2);
+    $this->assertEquals($revisionLca->label(), "revision 6");
 
   }
 }
