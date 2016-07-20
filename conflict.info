@@ -1,4 +1,0 @@
-name = Conflict
-description = Fieldwise conflict prevention and resolution.
-core = 7.x
-files[] = conflict.test
