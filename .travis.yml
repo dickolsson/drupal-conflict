@@ -11,6 +11,8 @@ php:
 matrix:
   allow_failures:
     - php: hhvm
+  fast_finish: true
+
 
 before_install:
   - composer selfupdate
@@ -24,3 +26,4 @@ install:
 
 script:
   - phing -f build.xml
+  - cd ../.. && php /var/www/html/drupal8/core/scripts/run-tests.sh --url http://127.0.0.1/drupal8/ --module conflict
