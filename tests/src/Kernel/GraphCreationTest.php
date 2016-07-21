@@ -2,20 +2,10 @@
 
 namespace Drupal\Tests\conflict\Kernel;
 
-use Fhaculty\Graph\Graph;
 use Drupal\KernelTests\KernelTestBase;
+use Fhaculty\Graph\Graph;
 
 class GraphCreationTest extends KernelTestBase {
-
-    public function getNodesId($arr, &$storage) {
-        foreach ($arr as $value) {
-            $x = $value['#rev'];
-            $storage[$x] = $x;
-            if (count($value['children'])) {
-                $this->getNodesId($value['children'], $storage);
-            }
-        }
-    }
 
     public function testTreeToGraph() {
         $graph = new Graph();
@@ -92,11 +82,22 @@ class GraphCreationTest extends KernelTestBase {
         );
         $storage = array();
         $this->getNodesId($array1, $storage);
-        // Creating graph nodes here
         $vertices = $this->generateVertices($graph, count($storage));
         $this->generateEdges($vertices,$array1);
-        foreach ($vertices[2]->getVerticesEdgeFrom() as $a) {
-            echo $a->getId().' '.PHP_EOL;
+        $this->assertEquals($vertices[1]->getVerticesEdgeFrom()->getId(), 0);
+        $this->assertEquals($vertices[2]->getVerticesEdgeFrom()->getId(), 1);
+        $this->assertEquals($vertices[3]->getVerticesEdgeFrom()->getId(), 1);
+        $this->assertEquals($vertices[4]->getVerticesEdgeFrom()->getId(), 3);
+        $this->assertEquals($vertices[5]->getVerticesEdgeFrom()->getId(), 0);
+    }
+
+    public function getNodesId($arr, &$storage) {
+        foreach ($arr as $value) {
+            $x = $value['#rev'];
+            $storage[$x] = $x;
+            if (count($value['children'])) {
+                $this->getNodesId($value['children'], $storage);
+            }
         }
     }
 
@@ -122,4 +123,4 @@ class GraphCreationTest extends KernelTestBase {
 
 }
 $a = new GraphCreationTest();
-$a->abc();
+$a->testTreeToGraph();
