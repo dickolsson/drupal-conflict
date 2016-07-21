@@ -87,8 +87,8 @@ class GraphCreationTest extends KernelTestBase {
       )
     );
     $rev_ids = array();
-    $this->getNodesId($tree_array, $rev_ids);
-    $vertices = $this->generateVertices($graph, count($rev_ids));
+    $this->storeNodesId($tree_array, $rev_ids);
+    $vertices = $this->generateVertices($graph, $rev_ids);
     $this->generateEdges($vertices,$tree_array);
 
     /*
@@ -114,12 +114,12 @@ class GraphCreationTest extends KernelTestBase {
    * @param $tree_array : Array containing information about tree
    * @param $rev_ids : Array to store all revision ID.
    */
-  public function getNodesId($tree_array, &$rev_ids) {
+  public function storeNodesId($tree_array, &$revision_ids) {
     foreach ($tree_array as $value) {
       $current_id = $value['#rev'];
-      $rev_ids[$current_id] = $current_id;
+      $revision_ids[$current_id] = $current_id;
       if (count($value['children'])) {
-        $this->getNodesId($value['children'], $rev_ids);
+        $this->storeNodesId($value['children'], $revision_ids);
       }
     }
   }
@@ -150,9 +150,9 @@ class GraphCreationTest extends KernelTestBase {
    * @param int $count : Number of nodes.
    * @return \Fhaculty\Graph\Vertex[]
    */
-  public function generateVertices(Graph $graph, $count = 5) {
-    for ($i = 0; $i < $count; $i++) {
-      $ids[] = $i;
+  public function generateVertices(Graph $graph, $revision_ids) {
+    foreach ($revision_ids as $id) {
+      $ids[] = $id;
     }
     return $graph->createVertices($ids)->getMap();
   }
