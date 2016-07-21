@@ -2,18 +2,17 @@
 
 namespace Drupal\Tests\conflict\Kernel;
 
-use Fhaculty\Graph\Graph as Graph;
-use Drupal;
-
+use Fhaculty\Graph\Graph;
+use Drupal\KernelTests\KernelTestBase;
 
 class GraphCreationTest extends KernelTestBase {
 
-    public function creator($arr, &$storage) {
+    public function getNodesId($arr, &$storage) {
         foreach ($arr as $value) {
             $x = $value['#rev'];
             $storage[$x] = $x;
             if (count($value['children'])) {
-                $this->creator($value['children'], $storage);
+                $this->getNodesId($value['children'], $storage);
             }
         }
     }
@@ -92,7 +91,7 @@ class GraphCreationTest extends KernelTestBase {
             )
         );
         $storage = array();
-        $this->creator($array1, $storage);
+        $this->getNodesId($array1, $storage);
         // Creating graph nodes here
         $vertices = $this->generateVertices($graph, count($storage));
         $this->generateEdges($vertices,$array1);
@@ -122,5 +121,5 @@ class GraphCreationTest extends KernelTestBase {
     }
 
 }
-$a = new GraphCreation();
+$a = new GraphCreationTest();
 $a->abc();
