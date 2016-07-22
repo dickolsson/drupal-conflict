@@ -15,8 +15,7 @@ class GraphCreationTest extends KernelTestBase {
     $tree_array = array(
       array(
         '#type' => 'rev',
-        '#uuid' => $uuid,
-        '#rev' => $revs[0],
+        '#rev' => 0,
         '#rev_info' => array(
           'status' => 'available',
           'default' => FALSE,
@@ -26,8 +25,7 @@ class GraphCreationTest extends KernelTestBase {
         'children' => array(
           array(
             '#type' => 'rev',
-            '#uuid' => $uuid,
-            '#rev' => $revs[1],
+            '#rev' => 1,
             '#rev_info' => array(
               'status' => 'available',
               'default' => FALSE,
@@ -37,8 +35,7 @@ class GraphCreationTest extends KernelTestBase {
             'children' => array(
               array(
                 '#type' => 'rev',
-                '#uuid' => $uuid,
-                '#rev' => $revs[2],
+                '#rev' => 2,
                 '#rev_info' => array(
                   'status' => 'available',
                   'default' => FALSE,
@@ -49,8 +46,7 @@ class GraphCreationTest extends KernelTestBase {
               ),
               array(
                 '#type' => 'rev',
-                '#uuid' => $uuid,
-                '#rev' => $revs[3],
+                '#rev' => 3,
                 '#rev_info' => array(
                   'status' => 'available',
                   'default' => FALSE,
@@ -60,8 +56,7 @@ class GraphCreationTest extends KernelTestBase {
                 'children' => array(
                   array(
                     '#type' => 'rev',
-                    '#uuid' => $uuid,
-                    '#rev' => $revs[4],
+                    '#rev' => 4,
                     '#rev_info' => array(
                       'status' => 'available',
                       'default' => TRUE,
@@ -76,8 +71,7 @@ class GraphCreationTest extends KernelTestBase {
           ),
           array(
             '#type' => 'rev',
-            '#uuid' => $uuid,
-            '#rev' => $revs[5],
+            '#rev' => 5,
             '#rev_info' => array(
               'status' => 'available',
               'default' => FALSE,
