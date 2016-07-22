@@ -11,8 +11,7 @@ use Fhaculty\Graph\Graph;
 class GraphCreationTest extends KernelTestBase {
 
   public function testTreeToGraph() {
-    $graph = new Graph();
-    $tree_array = array(
+    $tree = array(
       array(
         '#type' => 'rev',
         '#rev' => 0,
@@ -83,10 +82,7 @@ class GraphCreationTest extends KernelTestBase {
         )
       )
     );
-    $rev_ids = array();
-    $this->storeNodesId($tree_array, $rev_ids);
-    $vertices = $this->generateVertices($graph, $rev_ids);
-    $this->generateEdges($vertices,$tree_array);
+    $vertices = $this->getGraph($tree);
 
     /*
      * Shape of tree is:
@@ -115,14 +111,23 @@ class GraphCreationTest extends KernelTestBase {
     }
   }
 
+  public function getGraph($tree) {
+    $graph = new Graph();
+    $rev_ids = array();
+    $this->storeNodesId($tree, $rev_ids);
+    $vertices = $this->generateVertices($graph, $rev_ids);
+    $this->generateEdges($vertices,$tree);
+    return $vertices;
+  }
+
   /**
    * Stores all revision IDs in an array.
    *
-   * @param $tree_array : Array containing information about tree
+   * @param $tree : Array containing information about tree
    * @param $rev_ids : Array to store all revision ID.
    */
-  public function storeNodesId($tree_array, &$revision_ids) {
-    foreach ($tree_array as $value) {
+  protected function storeNodesId($tree, &$revision_ids) {
+    foreach ($tree as $value) {
       $current_id = $value['#rev'];
       $revision_ids[$current_id] = $current_id;
       if (count($value['children'])) {
@@ -135,11 +140,11 @@ class GraphCreationTest extends KernelTestBase {
    * Create Edges between parent and children.
    *
    * @param $revisions_array : An array which stores graph nodes.
-   * @param $tree_array : Array containing tree information.
+   * @param $tree : Array containing tree information.
    * @param int $parent : Parent ID.
    */
-  public function generateEdges($revisions_array, $tree_array, $parent = -1 ) {
-    foreach ($tree_array as $item) {
+  protected function generateEdges($revisions_array, $tree, $parent = -1 ) {
+    foreach ($tree as $item) {
       $current_id =$item['#rev'];
       if($parent != -1) {
         $revisions_array[$parent]->createEdgeTo($revisions_array[$current_id]);
@@ -157,7 +162,7 @@ class GraphCreationTest extends KernelTestBase {
    * @param int $count : Number of nodes.
    * @return \Fhaculty\Graph\Vertex[]
    */
-  public function generateVertices(Graph $graph, $revision_ids) {
+  protected function generateVertices(Graph $graph, $revision_ids) {
     foreach ($revision_ids as $id) {
       $ids[] = $id;
     }
