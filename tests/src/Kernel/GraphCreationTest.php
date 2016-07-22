@@ -84,7 +84,7 @@ class GraphCreationTest extends KernelTestBase {
     );
     $graph = new Graph();
     $graph = $this->getGraph($tree);
-    $vertices = $graph->getVertices()->getVertices();
+    $vertices = $graph->getVertices()->getMap();
 
     /*
      * Shape of tree is:
