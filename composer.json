@@ -3,6 +3,6 @@
   "description": "Find merge conflicts in revisionable entities.",
   "type": "drupal-module",
   "require": {
-    "graphp/algorithms": "~0.8.0"
+    "graphp/algorithms": "~0.8.1"
   }
 }
