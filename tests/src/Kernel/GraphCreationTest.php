@@ -113,11 +113,6 @@ class GraphCreationTest extends KernelTestBase {
     foreach ($vertices[5]->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), 0);
     }
-//    $this->assertEquals($vertices[1]->getVerticesEdgeFrom()->getId(), 0);
-//    $this->assertEquals($vertices[2]->getVerticesEdgeFrom()->getId(), 1);
-//    $this->assertEquals($vertices[3]->getVerticesEdgeFrom()->getId(), 1);
-//    $this->assertEquals($vertices[4]->getVerticesEdgeFrom()->getId(), 3);
-//    $this->assertEquals($vertices[5]->getVerticesEdgeFrom()->getId(), 0);
   }
 
   /**
