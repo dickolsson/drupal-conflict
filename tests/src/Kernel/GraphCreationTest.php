@@ -14,7 +14,7 @@ class GraphCreationTest extends KernelTestBase {
     $tree = array(
       array(
         '#type' => 'rev',
-        '#rev' => 0,
+        '#rev' => 0-zzzf2d5d944d64db082b484bc1088pqr,
         '#rev_info' => array(
           'status' => 'available',
           'default' => FALSE,
@@ -24,7 +24,7 @@ class GraphCreationTest extends KernelTestBase {
         'children' => array(
           array(
             '#type' => 'rev',
-            '#rev' => 1,
+            '#rev' => 1-e4af2d5d944d64db082b484bc1088d1a,
             '#rev_info' => array(
               'status' => 'available',
               'default' => FALSE,
@@ -34,7 +34,7 @@ class GraphCreationTest extends KernelTestBase {
             'children' => array(
               array(
                 '#type' => 'rev',
-                '#rev' => 2,
+                '#rev' => 2-abcf2d5d944d64db082b484bc1088cde,
                 '#rev_info' => array(
                   'status' => 'available',
                   'default' => FALSE,
@@ -45,7 +45,7 @@ class GraphCreationTest extends KernelTestBase {
               ),
               array(
                 '#type' => 'rev',
-                '#rev' => 3,
+                '#rev' => 3-zzzf2d5d944d64db082b484bc1088cde,
                 '#rev_info' => array(
                   'status' => 'available',
                   'default' => FALSE,
@@ -55,7 +55,7 @@ class GraphCreationTest extends KernelTestBase {
                 'children' => array(
                   array(
                     '#type' => 'rev',
-                    '#rev' => 4,
+                    '#rev' => 4-zzzf2d5d944d64db082b412gh1088cde,
                     '#rev_info' => array(
                       'status' => 'available',
                       'default' => TRUE,
@@ -70,7 +70,7 @@ class GraphCreationTest extends KernelTestBase {
           ),
           array(
             '#type' => 'rev',
-            '#rev' => 5,
+            '#rev' => 5-zzzf2d5d345d64db082b484bc1088cde,
             '#rev_info' => array(
               'status' => 'available',
               'default' => FALSE,
@@ -82,7 +82,6 @@ class GraphCreationTest extends KernelTestBase {
         )
       )
     );
-    $graph = new Graph();
     $graph = $this->getGraph($tree);
     $vertices = $graph->getVertices()->getMap();
 
@@ -97,19 +96,19 @@ class GraphCreationTest extends KernelTestBase {
      *               4
      */
     foreach ($vertices[1]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEquals($parent->getId(), 0);
+      $this->assertEquals($parent->getId(), 0-zzzf2d5d944d64db082b484bc1088pqr);
     }
     foreach ($vertices[2]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEquals($parent->getId(), 1);
+      $this->assertEquals($parent->getId(), 1-e4af2d5d944d64db082b484bc1088d1a);
     }
     foreach ($vertices[3]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEquals($parent->getId(), 1);
+      $this->assertEquals($parent->getId(), 1-e4af2d5d944d64db082b484bc1088d1a);
     }
     foreach ($vertices[4]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEquals($parent->getId(), 3);
+      $this->assertEquals($parent->getId(), 3-zzzf2d5d944d64db082b484bc1088cde);
     }
     foreach ($vertices[5]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEquals($parent->getId(), 0);
+      $this->assertEquals($parent->getId(), 0-zzzf2d5d944d64db082b484bc1088pqr);
     }
   }
 
