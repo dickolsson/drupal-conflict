@@ -154,4 +154,3 @@ class GraphCreationTest extends KernelTestBase {
     return $graph->createVertices($ids)->getMap();
   }
 }
-
