@@ -95,19 +95,19 @@ class GraphCreationTest extends KernelTestBase {
      *              \
      *               4
      */
-    foreach ($vertices[1]->getVerticesEdgeFrom() as $parent) {
+    foreach ($vertices['1-e4af2d5d944d64db082b484bc1088d1a']->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), '0-zzzf2d5d944d64db082b484bc1088pqr');
     }
-    foreach ($vertices[2]->getVerticesEdgeFrom() as $parent) {
+    foreach ($vertices['2-abcf2d5d944d64db082b484bc1088cde']->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), '1-e4af2d5d944d64db082b484bc1088d1a');
     }
-    foreach ($vertices[3]->getVerticesEdgeFrom() as $parent) {
+    foreach ($vertices['3-zzzf2d5d944d64db082b484bc1088cde']->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), '1-e4af2d5d944d64db082b484bc1088d1a');
     }
-    foreach ($vertices[4]->getVerticesEdgeFrom() as $parent) {
+    foreach ($vertices['4-zzzf2d5d944d64db082b412gh1088cde']->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), '3-zzzf2d5d944d64db082b484bc1088cde');
     }
-    foreach ($vertices[5]->getVerticesEdgeFrom() as $parent) {
+    foreach ($vertices['5-zzzf2d5d345d64db082b484bc1088cde']->getVerticesEdgeFrom() as $parent) {
       $this->assertEquals($parent->getId(), '0-zzzf2d5d944d64db082b484bc1088pqr');
     }
   }
