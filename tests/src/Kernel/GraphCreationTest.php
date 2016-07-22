@@ -98,11 +98,26 @@ class GraphCreationTest extends KernelTestBase {
      *              \
      *               4
      */
-    $this->assertEquals($vertices[1]->getVerticesEdgeFrom()->getId(), 0);
-    $this->assertEquals($vertices[2]->getVerticesEdgeFrom()->getId(), 1);
-    $this->assertEquals($vertices[3]->getVerticesEdgeFrom()->getId(), 1);
-    $this->assertEquals($vertices[4]->getVerticesEdgeFrom()->getId(), 3);
-    $this->assertEquals($vertices[5]->getVerticesEdgeFrom()->getId(), 0);
+    foreach ($vertices[1]->getVerticesEdgeFrom() as $parent) {
+      $this->assertEquals($parent->getId(), 0);
+    }
+    foreach ($vertices[2]->getVerticesEdgeFrom() as $parent) {
+      $this->assertEquals($parent->getId(), 1);
+    }
+    foreach ($vertices[3]->getVerticesEdgeFrom() as $parent) {
+      $this->assertEquals($parent->getId(), 1);
+    }
+    foreach ($vertices[4]->getVerticesEdgeFrom() as $parent) {
+      $this->assertEquals($parent->getId(), 3);
+    }
+    foreach ($vertices[5]->getVerticesEdgeFrom() as $parent) {
+      $this->assertEquals($parent->getId(), 0);
+    }
+//    $this->assertEquals($vertices[1]->getVerticesEdgeFrom()->getId(), 0);
+//    $this->assertEquals($vertices[2]->getVerticesEdgeFrom()->getId(), 1);
+//    $this->assertEquals($vertices[3]->getVerticesEdgeFrom()->getId(), 1);
+//    $this->assertEquals($vertices[4]->getVerticesEdgeFrom()->getId(), 3);
+//    $this->assertEquals($vertices[5]->getVerticesEdgeFrom()->getId(), 0);
   }
 
   /**
