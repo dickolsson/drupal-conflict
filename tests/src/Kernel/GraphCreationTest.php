@@ -5,6 +5,9 @@ namespace Drupal\Tests\conflict\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Fhaculty\Graph\Graph;
 
+/**
+ * @group conflict
+ */
 class GraphCreationTest extends KernelTestBase {
 
   public function testTreeToGraph() {
