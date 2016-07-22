@@ -158,5 +158,3 @@ class GraphCreationTest extends KernelTestBase {
   }
 }
 
-$a = new GraphCreationTest();
-$a->testTreeToGraph();
