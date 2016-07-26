@@ -11,7 +11,7 @@ class SimpleMergeResolver implements ConflictResolverInterface
     return True;
   }
 
-  public function SimpleMergeResolver(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3)
+  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3)
   {
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();

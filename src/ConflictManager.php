@@ -17,7 +17,7 @@ class ConflictManager
   {
     foreach ($this->resolvers as $resolver) {
       if ($resolver->applies()) {
-        return $resolver->SimpleMergeResolver($revision1, $revision2, $revision3);
+        return $resolver->merge($revision1, $revision2, $revision3);
       }
     }
   }
