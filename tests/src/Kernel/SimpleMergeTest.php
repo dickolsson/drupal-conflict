@@ -20,8 +20,7 @@ class SimpleMergeTest extends EntityKernelTestBase {
    */
   public static $modules = ['entity_test', 'conflict', 'system', 'user'];
 
-  protected function setUp()
-  {
+  protected function setUp() {
     // First setup the needed entity types before installing the views.
     parent::setUp();
     $this->installEntitySchema('entity_test_rev');
@@ -32,8 +31,7 @@ class SimpleMergeTest extends EntityKernelTestBase {
    * then performs a simple algorithm to
    * find common parent of two revisions.
    */
-  public function testsimpleMergeResolver()
-  {
+  public function testsimpleMergeResolver() {
     // Creates a new entity
     $entity = EntityTestRev::create(['name' => 'revision 1']);
     $entity->save();

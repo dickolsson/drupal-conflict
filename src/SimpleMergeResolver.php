@@ -4,10 +4,12 @@ namespace Drupal\conflict;
 
 use Drupal\Core\Entity\RevisionableInterface;
 
-class SimpleMergeResolver implements ConflictResolverInterface
-{
-  public function applies()
-  {
+class SimpleMergeResolver implements ConflictResolverInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function applies() {
     return True;
   }
 

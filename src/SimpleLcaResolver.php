@@ -4,10 +4,8 @@ namespace Drupal\conflict;
 
 use Drupal\Core\Entity\RevisionableInterface;
 
-class SimpleLcaResolver implements ConflictAncestorResolverInterface
-{
-  public function applies()
-  {
+class SimpleLcaResolver implements ConflictAncestorResolverInterface {
+  public function applies() {
     return True;
   }
 
@@ -19,8 +17,7 @@ class SimpleLcaResolver implements ConflictAncestorResolverInterface
   *
   * @return int parent of both revisions
   */
-  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2)
-  {
+  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2) {
     // Calculating revision ID from revision object.
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();

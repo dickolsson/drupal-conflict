@@ -12,8 +12,7 @@ class LcaManager
    *
    * @param ConflictAncestorResolverInterface $resolver
    */
-  public function addLcaResolver(ConflictAncestorResolverInterface $resolver)
-  {
+  public function addLcaResolver(ConflictAncestorResolverInterface $resolver) {
     $this->resolvers[] = $resolver;
   }
 
@@ -23,8 +22,7 @@ class LcaManager
    *
    * @return int revision_ID
    */
-  public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2)
-  {
+  public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2) {
     foreach ($this->resolvers as $resolver) {
       if ($resolver->applies()) {
         return $resolver->resolve($revision1, $revision2);

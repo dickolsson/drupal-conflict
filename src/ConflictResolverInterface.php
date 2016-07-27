@@ -7,6 +7,12 @@ use Drupal\Core\Entity\RevisionableInterface;
 interface ConflictResolverInterface {
 
   /**
+   * @return bool
+   *  True if condition defines in services applies on it else False.
+   */
+  public function applies();
+
+  /**
    * @param Drupal\Core\Entity\RevisionableInterface $revision1
    * @param Drupal\Core\Entity\RevisionableInterface $revision2
    * @param Drupal\Core\Entity\RevisionableInterface $revision3
