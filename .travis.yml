@@ -38,7 +38,6 @@ before_install:
   - php ~/drush.phar --root=$HOME/www --yes site-install --db-url=mysql://root:@127.0.0.1/drupal testing
   - composer --working-dir=$HOME/www require graphp/algorithms
 
-
 install:
   - ln -s $TRAVIS_BUILD_DIR ~/www/modules/conflict
 
