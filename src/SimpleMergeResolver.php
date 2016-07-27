@@ -10,7 +10,7 @@ class SimpleMergeResolver implements ConflictResolverInterface {
    * {@inheritdoc}
    */
   public function applies() {
-    return True;
+    return TRUE;
   }
 
   /**

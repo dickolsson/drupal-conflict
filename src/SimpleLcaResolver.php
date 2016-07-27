@@ -3,10 +3,11 @@
 namespace Drupal\conflict;
 
 use Drupal\Core\Entity\RevisionableInterface;
+use Symfony\Component\Validator\Constraints\True;
 
 class SimpleLcaResolver implements ConflictAncestorResolverInterface {
   public function applies() {
-    return True;
+    return TRUE;
   }
 
   /**
