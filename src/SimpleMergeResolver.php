@@ -12,16 +12,9 @@ class SimpleMergeResolver implements ConflictResolverInterface
   }
 
   /**
-   * Return the last created revision's ID.
-   *
-   * @param RevisionableInterface $revision1
-   * @param RevisionableInterface $revision2
-   * @param RevisionableInterface $revision3
-   *
-   * @return mixed
+   * {@inheritdoc}
    */
-  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3)
-  {
+  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3) {
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();
     $revid3 = $revision3->getRevisionId();
