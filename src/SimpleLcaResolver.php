@@ -3,13 +3,13 @@
 namespace Drupal\conflict;
 
 use Drupal\Core\Entity\RevisionableInterface;
-use Symfony\Component\Validator\Constraints\True;
+use Fhaculty\Graph\Graph;
 
 class SimpleLcaResolver implements ConflictAncestorResolverInterface {
-  public function applies() {
+ 
+ public function applies() {
     return TRUE;
   }
-
   /**
   * Finds the smallest revision id and calculates it's parent
   *
@@ -18,7 +18,7 @@ class SimpleLcaResolver implements ConflictAncestorResolverInterface {
   *
   * @return int parent of both revisions
   */
-  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2) {
+  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph) {
     // Calculating revision ID from revision object.
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();

@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\conflict;
+use Fhaculty\Graph\Graph;
 use Drupal\Core\Entity\RevisionableInterface;
 
 /**
@@ -10,6 +11,6 @@ use Drupal\Core\Entity\RevisionableInterface;
  */
 interface ConflictAncestorResolverInterface {
 
-  public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2);
+  public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2, Graph $graph);
 
 }
