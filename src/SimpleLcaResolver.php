@@ -18,7 +18,7 @@ class SimpleLcaResolver implements ConflictAncestorResolverInterface {
   *
   * @return int parent of both revisions
   */
-  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph) {
+  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph = NULL) {
     // Calculating revision ID from revision object.
     $revid1 = $revision1->getRevisionId();
     $revid2 = $revision2->getRevisionId();

@@ -22,7 +22,7 @@ class LcaManager {
    *
    * @return int revision_ID
    */
-  public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph) {
+  public function resolveLowestCommonAncestor(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph = NULL) {
     foreach ($this->resolvers as $resolver) {
       if ($resolver->applies()) {
         return $resolver->resolve($revision1, $revision2, $graph);

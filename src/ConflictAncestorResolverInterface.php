@@ -11,6 +11,6 @@ use Drupal\Core\Entity\RevisionableInterface;
  */
 interface ConflictAncestorResolverInterface {
 
-  public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2, Graph $graph);
+  public function resolve(RevisionableInterface $revision1,RevisionableInterface $revision2, Graph $graph = NULL);
 
 }
