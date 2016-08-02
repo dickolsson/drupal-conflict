@@ -19,8 +19,8 @@ interface ConflictResolverInterface {
    * @param \Drupal\Core\Entity\RevisionableInterface $revision2
    * @param \Drupal\Core\Entity\RevisionableInterface $revision3
    *
-   * @return mixed Last created revision's Id.
-   * Last created revision's Id.
+   * @return mixed
+   *   Last created revision's Id.
    */
   public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3);
 
