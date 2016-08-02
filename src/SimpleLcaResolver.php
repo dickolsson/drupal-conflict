@@ -6,18 +6,22 @@ use Drupal\Core\Entity\RevisionableInterface;
 use Fhaculty\Graph\Graph;
 
 class SimpleLcaResolver implements ConflictAncestorResolverInterface {
- 
- public function applies() {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function applies() {
     return TRUE;
   }
+
   /**
-  * Finds the smallest revision id and calculates it's parent
-  *
-  * @param RevisionableInterface $revision1
-  * @param RevisionableInterface $revision2
-  *
-  * @return int parent of both revisions
-  */
+   * Finds the smallest revision id and calculates it's parent
+   *
+   * @param RevisionableInterface $revision1
+   * @param RevisionableInterface $revision2
+   *
+   * @return int parent of both revisions
+   */
   public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph = NULL) {
     // Calculating revision ID from revision object.
     $revid1 = $revision1->getRevisionId();
@@ -27,4 +31,5 @@ class SimpleLcaResolver implements ConflictAncestorResolverInterface {
     }
     return $revid2-1;
   }
+
 }

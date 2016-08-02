@@ -13,6 +13,7 @@ use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 class KernelLcaTest extends EntityKernelTestBase {
 
   protected $entityType;
+  
   /**
    * Modules to enable.
    *
@@ -21,18 +22,16 @@ class KernelLcaTest extends EntityKernelTestBase {
   public static $modules = ['entity_test', 'conflict', 'system', 'user'];
 
   protected function setUp() {
-  // First setup the needed entity types before installing the views.
+    // First setup the needed entity types before installing the views.
     parent::setUp();
     $this->installEntitySchema('entity_test_rev');
   }
 
   /**
-  * Creates an entity and it's revisions
-  * then performs a simple algorithm to
-  * find common parent of two revisions.
-  */
+   * Creates an entity and it's revisions then performs a simple algorithm to
+   * find common parent of two revisions.
+   */
   public function testsimpleLcaResolver() {
-
     // Creates a new entity
     $entity = EntityTestRev::create(['name' => 'revision 1']);
     $entity->save();
@@ -73,4 +72,5 @@ class KernelLcaTest extends EntityKernelTestBase {
       ->loadRevision($parent_revision_id2);
     $this->assertEquals($revisionLca->label(), "revision 2");
   }
+
 }

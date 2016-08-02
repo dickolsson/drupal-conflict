@@ -13,6 +13,7 @@ use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 class SimpleMergeTest extends EntityKernelTestBase {
 
   protected $entityType;
+
   /**
    * Modules to enable.
    *
@@ -27,8 +28,7 @@ class SimpleMergeTest extends EntityKernelTestBase {
   }
 
   /**
-   * Creates an entity and it's revisions
-   * then performs a simple algorithm to
+   * Creates an entity and it's revisions then performs a simple algorithm to
    * find common parent of two revisions.
    */
   public function testsimpleMergeResolver() {
@@ -81,6 +81,6 @@ class SimpleMergeTest extends EntityKernelTestBase {
         ->getStorage('entity_test_rev')
         ->loadRevision($newest_revision2);
     $this->assertEquals($revisionLca->label(), "revision 6");
-
   }
+
 }

@@ -6,9 +6,10 @@ use Fhaculty\Graph\Graph;
 use Drupal\Core\Entity\RevisionableInterface;
 
 class LcaManager {
+
   protected $resolvers = [];
 
-   /**
+  /**
    *
    * @param ConflictAncestorResolverInterface $resolver
    */
@@ -19,6 +20,7 @@ class LcaManager {
   /**
    * @param RevisionableInterface $revision1
    * @param RevisionableInterface $revision2
+   * @param \Fhaculty\Graph\Graph $graph
    *
    * @return int revision_ID
    */
@@ -29,4 +31,5 @@ class LcaManager {
       }
     }
   }
+
 }

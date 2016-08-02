@@ -4,14 +4,14 @@ services:
     tags:
       - { name: service_collector, tag: lca_resolver, call: addLcaResolver}
   conflict.simplelca_resolver:
-      class: Drupal\conflict\SimpleLcaResolver
-      tags:
-        - { name: lca_resolver, priority: 10}
+    class: Drupal\conflict\SimpleLcaResolver
+    tags:
+      - { name: lca_resolver, priority: 10}
   conflict.merge_manager:
-      class: Drupal\conflict\ConflictManager
-      tags:
-        - { name: service_collector, tag: merge_resolver, call: addConflictResolver}
+    class: Drupal\conflict\ConflictManager
+    tags:
+      - { name: service_collector, tag: merge_resolver, call: addConflictResolver}
   conflict.simplemerge_resolver:
-     class: Drupal\conflict\SimpleMergeResolver
-     tags:
-        - { name: merge_resolver, priority: 10}
+    class: Drupal\conflict\SimpleMergeResolver
+    tags:
+      - { name: merge_resolver, priority: 10}
